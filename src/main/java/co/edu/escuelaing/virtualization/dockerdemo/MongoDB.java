@@ -67,14 +67,7 @@ public class MongoDB {
         Document a = new Document(); 
         
         System.out.println(docs.size());
-        /*
-        for (int i = 0 ; i < 10 ; i++ ) {
-            Document doc = docs.pop();
-            System.out.println("entro al for"); 
-            if(doc.get("mensaje")!= null){
-                results.add("Elemento: " + doc.get("mensaje").toString() + "<br> Fecha de Creacion: "+ doc.get("fecha").toString()+ "<br>");
-            }
-        }*/
+
         if(docs.size() >= 10){ 
             for (int i = 0 ; i < 10 ; i++ ) {
                 Document doc = docs.pop();
@@ -88,8 +81,6 @@ public class MongoDB {
                 a.append(doc.get("_id").toString(), doc); 
             }
         }
-        //return results.toString().replace(",", "<br>").replace("[", "").replace("]", "");
-        System.out.print(" ----------- " + a);
         return a.toJson(); 
     }
 }

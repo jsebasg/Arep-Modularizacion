@@ -21,7 +21,7 @@ public class SparkWebServer {
             String s = req.params(":s"); 
             System.out.println(s); 
             mongo.addElelement(s); 
-             res.type("application/json");
+            res.type("application/json");
             return mongo.getLast(); 
                   }); 
     }
