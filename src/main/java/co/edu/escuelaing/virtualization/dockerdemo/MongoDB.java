@@ -15,6 +15,7 @@ import com.mongodb.client.MongoIterable;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bson.Document;
@@ -23,6 +24,7 @@ import org.bson.Document;
  *
  * @author jgarc
  */
+
 public class MongoDB {
     MongoClientURI uri;
     MongoClient mongoClient;
@@ -46,7 +48,7 @@ public class MongoDB {
         System.out.println(collection.countDocuments());
         Document document=new Document();
         document.put("mensaje",message);
-        document.put("fecha", LocalDateTime.now()); 
+        document.put("fecha", LocalDateTime.now().toString()); 
         System.out.println("entro a add1 DB");
         collection.insertOne(document);
         System.out.println("entro a add2 DB");
@@ -56,18 +58,38 @@ public class MongoDB {
         System.out.println("entro a last DB");
         MongoDatabase database = mongoClient.getDatabase("arep");
         MongoCollection<Document> collection =database.getCollection("local");
-        FindIterable fit = collection.find();
-        ArrayList<Document> docs = new ArrayList<Document>();
+        Stack<Document> docs = new Stack<Document>();
         ArrayList<String> results = new ArrayList<>();
-        fit.into(docs);
+        
+        for(Document s : collection.find() ){
+            docs.push(s); 
+        }
+        Document a = new Document(); 
+        
         System.out.println(docs.size());
-        for (Document doc : docs) {
-            if (doc.get("mensaje")!= null){
+        /*
+        for (int i = 0 ; i < 10 ; i++ ) {
+            Document doc = docs.pop();
+            System.out.println("entro al for"); 
+            if(doc.get("mensaje")!= null){
                 results.add("Elemento: " + doc.get("mensaje").toString() + "<br> Fecha de Creacion: "+ doc.get("fecha").toString()+ "<br>");
             }
-            if(results.size() >= 10 )break;
-            
+        }*/
+        if(docs.size() >= 10){ 
+            for (int i = 0 ; i < 10 ; i++ ) {
+                Document doc = docs.pop();
+                System.out.println("entro al for");
+                a.append(doc.get("_id").toString(), doc); 
+            }
+        }else{
+            for (int i = 0 ; i < docs.size() ; i++ ) {
+                Document doc = docs.pop();
+                System.out.println("entro al for");
+                a.append(doc.get("_id").toString(), doc); 
+            }
         }
-        return results.toString().replace(",", "<br>").replace("[", "").replace("]", "");
+        //return results.toString().replace(",", "<br>").replace("[", "").replace("]", "");
+        System.out.print(" ----------- " + a);
+        return a.toJson(); 
     }
 }

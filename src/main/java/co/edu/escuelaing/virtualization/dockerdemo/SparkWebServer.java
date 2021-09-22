@@ -17,8 +17,11 @@ public class SparkWebServer {
         MongoDB mongo = new MongoDB();
         port(getPort());
         get("hello", (req,res) -> "Hello Docker!");
-        get("database" ,(req,res) -> {
-            mongo.addElelement("hola"); 
+        get("database/:s" ,(req,res) -> {
+            String s = req.params(":s"); 
+            System.out.println(s); 
+            mongo.addElelement(s); 
+             res.type("application/json");
             return mongo.getLast(); 
                   }); 
     }
